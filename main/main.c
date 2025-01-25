@@ -18,7 +18,6 @@
 #include <web_server.h>
 #include <log.h>
 #include <status_led.h>
-
 #include <esp_sntp.h>
 #include <core_dump.h>
 #include <esp_ota_ops.h>
@@ -29,11 +28,9 @@
 #include "esp_log.h"
 #include "driver/uart.h"
 #include "driver/ledc.h"
-#include "button.h"
-
+#include "../button/include/button.h"
 #include "config.h"
 #include "wifi.h"
-
 #include "uart.h"
 #include "interface/ntrip.h"
 #include "tasks.h"
@@ -129,8 +126,6 @@ void app_main()
 
     ntrip_server_init();
     ntrip_server_2_init();
-
-
 
 
     uart_nmea("$PESP,INIT,COMPLETE");

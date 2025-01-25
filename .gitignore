@@ -1,0 +1,45 @@
+# Ignore build directories
+/build/
+/build-*/
+
+# Ignore Visual Studio Code settings
+.vscode/
+
+# Ignore Python virtual environment
+venv/
+env/
+
+# Ignore ESP-IDF specific files
+*.pyc
+*.o
+*.d
+*.elf
+*.bin
+*.map
+
+# Ignore generated files
+sdkconfig
+sdkconfig.old
+partition_table/*.bin
+
+# Ignore logs and temporary files
+*.log
+*.tmp
+*.bak
+
+# Ignore custom scripts or temporary files
+*.sh~
+*.bat~
+*.swp
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore IDE-specific files
+*.idea/
+*.iml
+
+# Ignore other temporary files
+*.swo
+*.swn

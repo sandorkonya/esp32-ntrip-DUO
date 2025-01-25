@@ -31,6 +31,9 @@
 #include <esp_netif_ip_addr.h>
 #include "wifi.h"
 #include "config.h"
+#include "esp_mac.h"
+#include "rom/ets_sys.h"
+
 
 static const char *TAG = "WIFI";
 
