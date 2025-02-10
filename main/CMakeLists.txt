@@ -14,6 +14,7 @@ idf_component_register(SRCS "main.c"
 		"interface/ntrip_server.c"
 		"interface/ntrip_server_2.c"
 		"protocol/nmea.c"
+		"network.c"
         INCLUDE_DIRS "include" "../button"
 		REQUIRES button esp_eth esp_timer app_update  esp_bootloader_format bootloader bootloader_support soc esp_netif driver nvs_flash esp_partition mbedtls tcp_transport lwip esp_partition esp_http_server espcoredump esp_https_ota esp_wifi mbedtls vfs json tcp_transport esp_timer spiffs
 
