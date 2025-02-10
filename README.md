@@ -1,13 +1,7 @@
-# ESP32 NTRIP Duo
-This is modified version of ESP32 xbee.
+# ESP32 NTRIP Duo ESP-IDF v5.2.3
+This version had been updated from ESP-IDF 4.1 to v5.2.3 and adapted to the WT32-ETH01 ESP32 Module!
 
-Main difference is that this have two NTRIP servers that can be running at the same time to be able to feed Onocoy and RTK Direct!!!
-
-ESP32 NTRIP Duo is made with [ESP-IDF](https://github.com/espressif/esp-idf). Its main function is to forward the UART of the ESP32 to a variety of protocols over WiFi.
-
-In this version Installation is simplified, with just a single bin file. You can use ESPHome web flasher https://web.esphome.io/ just connect your ESP32 dev board to PC, select connect, chose correct COM port, connect and install. On popup chose bin file and click install.
-
-This software can run on ESP32 WROOM type.
+All functionalties remained  - however untested:
 
 ## Features
 - WiFi Station
@@ -16,13 +10,5 @@ This software can run on ESP32 WROOM type.
 - UART configuration
 - Two NTRIP Servers
 
-
-## Help
-It can be compiled using ESP-IDF 4.1.
-
-To install the latest firmware use ESPHome web Flasher https://web.esphome.io/
-
-It is still work in progress!!!
-
 ## Pinout
-By default it is set for UART0 TX gpio1, RX gpio3
+By default it is set for UART0 TX gpio1, RX gpio3 (also default for the WT32-ETH01 module)
