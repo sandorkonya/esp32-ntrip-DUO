@@ -7,8 +7,8 @@ UPDATE 2025-02-14:
  - socket client & server
  - increased stability by removing the button component
 
+[Release v0.1](https://github.com/sandorkonya/esp32-ntrip-DUO/releases/tag/v0.1) has the features:
 
-## Features
 - WiFi Station
 - WiFi Hotspot
 - Web Interface
