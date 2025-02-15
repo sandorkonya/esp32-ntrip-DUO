@@ -6,7 +6,6 @@ Release v0.2 has the:
  - socket client & server
  - increased stability by removing the button component
 
-All functionalties remained:
 
 ## Features
 - WiFi Station
