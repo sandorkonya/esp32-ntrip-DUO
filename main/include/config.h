@@ -94,6 +94,26 @@ typedef struct config_item {
 #define KEY_CONFIG_NTRIP_CLIENT_USERNAME "ntr_cli_user"
 #define KEY_CONFIG_NTRIP_CLIENT_PASSWORD "ntr_cli_pass"
 
+#define KEY_CONFIG_NTRIP_CASTER_ACTIVE "ntr_cst_active"
+#define KEY_CONFIG_NTRIP_CASTER_COLOR "ntr_cst_color"
+#define KEY_CONFIG_NTRIP_CASTER_PORT "ntr_cst_port"
+#define KEY_CONFIG_NTRIP_CASTER_MOUNTPOINT "ntr_cst_mp"
+#define KEY_CONFIG_NTRIP_CASTER_USERNAME "ntr_cst_user"
+#define KEY_CONFIG_NTRIP_CASTER_PASSWORD "ntr_cst_pass"
+
+// Socket
+#define KEY_CONFIG_SOCKET_SERVER_ACTIVE "sck_srv_active"
+#define KEY_CONFIG_SOCKET_SERVER_COLOR "sck_srv_color"
+#define KEY_CONFIG_SOCKET_SERVER_TCP_PORT "sck_srv_t_port"
+#define KEY_CONFIG_SOCKET_SERVER_UDP_PORT "sck_srv_u_port"
+
+#define KEY_CONFIG_SOCKET_CLIENT_ACTIVE "sck_cli_active"
+#define KEY_CONFIG_SOCKET_CLIENT_COLOR "sck_cli_color"
+#define KEY_CONFIG_SOCKET_CLIENT_HOST "sck_cli_host"
+#define KEY_CONFIG_SOCKET_CLIENT_PORT "sck_cli_port"
+#define KEY_CONFIG_SOCKET_CLIENT_TYPE_TCP_UDP "sck_cli_type"
+#define KEY_CONFIG_SOCKET_CLIENT_CONNECT_MESSAGE "sck_cli_msg"
+
 // UART
 #define KEY_CONFIG_UART_NUM "uart_num"
 #define KEY_CONFIG_UART_TX_PIN "uart_tx_pin"

@@ -22,8 +22,8 @@
 #include <driver/uart.h>
 #include <esp_wifi_types.h>
 #include <driver/gpio.h>
-#include <uart.h>
-#include <tasks.h>
+#include "uart.h"
+#include "tasks.h"
 #include "config.h"
 #include "esp_netif.h"
 
@@ -164,6 +164,82 @@ const config_item_t CONFIG_ITEMS[] = {
                 .secret = true,
                 .def.str = ""
         },
+
+
+        {
+                .key = KEY_CONFIG_NTRIP_CASTER_ACTIVE,
+                .type = CONFIG_ITEM_TYPE_BOOL,
+                .def.bool1 = false
+        }, {
+                .key = KEY_CONFIG_NTRIP_CASTER_COLOR,
+                .type = CONFIG_ITEM_TYPE_COLOR,
+                .def.color.rgba = 0x00000055u
+        }, {
+                .key = KEY_CONFIG_NTRIP_CASTER_PORT,
+                .type = CONFIG_ITEM_TYPE_UINT16,
+                .def.uint16 = 2101
+        }, {
+                .key = KEY_CONFIG_NTRIP_CASTER_MOUNTPOINT,
+                .type = CONFIG_ITEM_TYPE_STRING,
+                .def.str = ""
+        }, {
+                .key = KEY_CONFIG_NTRIP_CASTER_USERNAME,
+                .type = CONFIG_ITEM_TYPE_STRING,
+                .def.str = ""
+        }, {
+                .key = KEY_CONFIG_NTRIP_CASTER_PASSWORD,
+                .type = CONFIG_ITEM_TYPE_STRING,
+                .secret = true,
+                .def.str = ""
+        },
+
+
+                // Socket
+        {
+                .key = KEY_CONFIG_SOCKET_SERVER_ACTIVE,
+                .type = CONFIG_ITEM_TYPE_BOOL,
+                .def.bool1 = false
+        }, {
+                .key = KEY_CONFIG_SOCKET_SERVER_COLOR,
+                .type = CONFIG_ITEM_TYPE_COLOR,
+                .def.color.rgba = 0x00000055u
+        }, {
+                .key = KEY_CONFIG_SOCKET_SERVER_TCP_PORT,
+                .type = CONFIG_ITEM_TYPE_UINT16,
+                .def.uint16 = 23
+        }, {
+                .key = KEY_CONFIG_SOCKET_SERVER_UDP_PORT,
+                .type = CONFIG_ITEM_TYPE_UINT16,
+                .def.uint16 = 23
+        },
+
+        {
+                .key = KEY_CONFIG_SOCKET_CLIENT_ACTIVE,
+                .type = CONFIG_ITEM_TYPE_BOOL,
+                .def.bool1 = false
+        }, {
+                .key = KEY_CONFIG_SOCKET_CLIENT_COLOR,
+                .type = CONFIG_ITEM_TYPE_COLOR,
+                .def.color.rgba = 0x00000055u
+        }, {
+                .key = KEY_CONFIG_SOCKET_CLIENT_HOST,
+                .type = CONFIG_ITEM_TYPE_STRING,
+                .def.str = ""
+        }, {
+                .key = KEY_CONFIG_SOCKET_CLIENT_PORT,
+                .type = CONFIG_ITEM_TYPE_UINT16,
+                .def.uint16 = 23
+        }, {
+                .key = KEY_CONFIG_SOCKET_CLIENT_TYPE_TCP_UDP,
+                .type = CONFIG_ITEM_TYPE_BOOL,
+                .def.bool1 = true
+        }, {
+                .key = KEY_CONFIG_SOCKET_CLIENT_CONNECT_MESSAGE,
+                .type = CONFIG_ITEM_TYPE_STRING,
+                .def.str = "\n"
+        },
+
+
 
         // UART
         {
@@ -528,6 +604,11 @@ esp_err_t config_get_str_blob_alloc(const config_item_t *item, void **out_value)
     esp_err_t ret = config_get_str_blob(item, NULL, &length);
     if (ret != ESP_OK) return ret;
     *out_value = malloc(length);
+    if(*out_value == NULL)
+    {
+    	ESP_LOGE(TAG,"Memory allocation failed during reading config");
+    	return ESP_ERR_NO_MEM;
+    }
     return config_get_str_blob(item, *out_value, &length);
 }
 
@@ -570,5 +651,5 @@ static void config_restart_task() {
 void config_restart() {
     uart_nmea("$PESP,CFG,RESTARTING");
 
-    xTaskCreate(config_restart_task, "config_restart_task", 4096, NULL, TASK_PRIORITY_MAX, NULL);
+    xTaskCreate(config_restart_task, "config_restart_task", 4096, NULL, 1, NULL);
 }

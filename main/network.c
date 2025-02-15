@@ -5,12 +5,10 @@
 #include "esp_eth_mac.h"
 #include "config.h" // Include if you need any config values in this file
 
-
 static const char *TAG = "NETWORK";
 
 static esp_netif_t *global_netif = NULL;
 static bool ethernet_active = false;
-
 
 esp_netif_t *network_init() {
     esp_eth_handle_t eth_handle = NULL;

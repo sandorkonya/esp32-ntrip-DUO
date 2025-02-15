@@ -36,6 +36,7 @@
 #include <esp_timer.h>
 #include "web_server.h"
 #include "errno.h"
+#include "esp_task_wdt.h"
 
 // Max length a file path can have on storage
 #define FILE_PATH_MAX (ESP_VFS_PATH_MAX + CONFIG_SPIFFS_OBJ_NAME_LEN)
@@ -343,29 +344,24 @@ static esp_err_t file_get_handler(httpd_req_t *req) {
     FILE *fd = NULL, *fd_hash = NULL;
     struct stat file_stat;
 
-    // Extract filename from URL
     char *file_name = get_path_from_uri(file_path, WWW_PARTITION_PATH, req->uri, sizeof(file_path));
-    ERROR_ACTION(TAG, file_name == NULL, {
+    if (file_name == NULL) {
         httpd_resp_send_err(req, HTTPD_500_INTERNAL_SERVER_ERROR, "Filename too long");
         return ESP_FAIL;
-    }, "Filename too long")
+    }
 
-    // If name has trailing '/', respond with index page
     if (file_name[strlen(file_name) - 1] == '/' && strlen(file_name) + strlen("index.html") < FILE_PATH_MAX) {
         strcpy(&file_name[strlen(file_name)], "index.html");
-
         httpd_resp_set_hdr(req, "Access-Control-Allow-Origin", "*");
     }
 
     set_content_type_from_file(req, file_name);
 
-    // Check if file exists
-    ERROR_ACTION(TAG, stat(file_path, &file_stat) == -1, {
+    if (stat(file_path, &file_stat) == -1) {
         httpd_resp_send_404(req);
         return ESP_FAIL;
-    }, "Could not stat file %s", file_path)
+    }
 
-    // Check file hash (if matches request, file is not modified)
     strcpy(file_hash_path, file_path);
     strcpy(&file_hash_path[strlen(file_hash_path)], FILE_HASH_SUFFIX);
     char etag[8 + 2 + 1] = ""; // Store CRC32, quotes and \0
@@ -378,39 +374,42 @@ static esp_err_t file_get_handler(httpd_req_t *req) {
     if (strlen(etag) > 0) httpd_resp_set_hdr(req, "ETag", etag);
 
     fd = fopen(file_path, "r");
-    ERROR_ACTION(TAG, fd == NULL, {
+    if (fd == NULL) {
         httpd_resp_send_err(req, HTTPD_500_INTERNAL_SERVER_ERROR, "Could not read file");
         return ESP_FAIL;
-    }, "Could not read file %s", file_path)
+    }
 
     ESP_LOGI(TAG, "Sending file %s (%ld bytes)...", file_name, file_stat.st_size);
 
-    // Retrieve the pointer to scratch buffer for temporary storage
     size_t length;
     uint32_t crc = 0;
+
     do {
-        // Read file in chunks into the scratch buffer
         length = fread(buffer, 1, BUFFER_SIZE, fd);
 
-        // Send the buffer contents as HTTP response chunk
+        // Check for client disconnect *before* sending
+        if (httpd_req_to_sockfd(req) < 0) {
+            ESP_LOGW(TAG, "Client disconnected during file transfer %s", file_name);
+            fclose(fd);
+            // If hash was partially calculated, you might want to delete it.
+            if(crc != 0) remove(file_hash_path);
+            return ESP_FAIL; // Or some other appropriate error handling
+        }
+
         if (httpd_resp_send_chunk(req, buffer, length) != ESP_OK) {
             ESP_LOGE(TAG, "Failed sending file %s", file_name);
             httpd_resp_sendstr_chunk(req, NULL);
-
             httpd_resp_send_err(req, HTTPD_500_INTERNAL_SERVER_ERROR, "Failed to send file");
-
             fclose(fd);
             return ESP_FAIL;
         }
 
-        // Update checksum
         crc = crc32_le(crc, (const uint8_t *)buffer, length);
+
     } while (length != 0);
 
-    // Close file after sending complete
     fclose(fd);
 
-    // Store CRC hash
     fd_hash = fopen(file_hash_path, "w");
     if (fd_hash != NULL) {
         fwrite(&crc, sizeof(crc), 1, fd_hash);
@@ -419,8 +418,11 @@ static esp_err_t file_get_handler(httpd_req_t *req) {
         ESP_LOGW(TAG, "Could not open hash file %s for writing: %d %s", file_hash_path, errno, strerror(errno));
     }
 
+    // Finish sending the response
+    httpd_resp_send_chunk(req, NULL, 0); // Important: Send the final zero-length chunk
     return ESP_OK;
 }
+
 
 static esp_err_t config_get_handler(httpd_req_t *req) {
     if (check_auth(req) == ESP_FAIL) return ESP_FAIL;
@@ -515,6 +517,11 @@ static esp_err_t config_post_handler(httpd_req_t *req) {
     buffer[ret] = '\0';
 
     cJSON *root = cJSON_Parse(buffer);
+    if (root == NULL) {
+    ESP_LOGE(TAG, "Failed to parse JSON");
+    httpd_resp_send_err(req, HTTPD_400_BAD_REQUEST, "Invalid JSON");
+    return ESP_FAIL;
+    }
 
     int config_item_count;
     const config_item_t *config_items = config_items_get(&config_item_count);
@@ -592,15 +599,20 @@ static esp_err_t config_post_handler(httpd_req_t *req) {
                             err = config_set(&item, &uint64);
                             break;
                         default:
-                            err = ESP_FAIL;
+                            err = ESP_ERR_INVALID_ARG; // Handle invalid item type
                             break;
                     }
                 }
             }
 
-            if (err != ESP_OK) {
-                ESP_LOGE(TAG, "Error setting %s = %s: %d - %s", item.key, entry->valuestring, err, esp_err_to_name(err));
-            }
+        if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Error setting %s = %s: %d - %s", item.key, entry->valuestring, err, esp_err_to_name(err));
+        // Consider sending an error response to the client here
+        cJSON_Delete(root); // Clean up JSON
+        httpd_resp_send_err(req, HTTPD_400_BAD_REQUEST, "Invalid configuration value");
+        return ESP_FAIL;
+    }
+
         }
     }
 

@@ -30,6 +30,9 @@
 #include "config.h"
 #include "util.h"
 #include "uart.h"
+#include <errno.h>  // Include errno.h to define errno
+#include <string.h>  // Likely needed for strlen()
+#include <unistd.h>  // Likely needed for write(), read()
 
 static const char *TAG = "NTRIP_SERVER";
 

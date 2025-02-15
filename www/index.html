@@ -1108,8 +1108,125 @@
                         </div>
                     </div>
 
-                    </div>
                 </div>
+            
+
+                <div class="col-xl-6">
+            
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                Socket server
+                                <small class="socket-server-stats stream-stats" data-stream="socket_server"></small>
+                                <div class="custom-control custom-switch d-inline float-right">
+                                    <input type="checkbox" name="sck_srv_active" value="1" class="custom-control-input" id="switch-socket-server">
+                                    <label class="custom-control-label" for="switch-socket-server"></label>
+                                </div>
+                                <div class="d-inline mr-1 float-right">
+                                    <input type="color" name="sck_srv_color" data-disable-if="#switch-socket-server" value="#ffffff" id="color-socket-server">
+                                </div>
+                            </div>
+                            <div class="card-body" data-disable-if="#switch-socket-server">
+                                <div class="form-row mb-3">
+                                    <div class="col">
+                                        <label>TCP port</label>
+                                        <div class="input-group">
+                                            <input type="number" name="sck_srv_t_port" maxlength="5" min="0" max="65535" class="form-control" required>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <label>UDP port</label>
+                                        <div class="input-group">
+                                            <input type="number" name="sck_srv_u_port" maxlength="5" min="0" max="65535" class="form-control" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                Socket client
+                                <small class="socket-client-stats stream-stats" data-stream="socket_client"></small>
+                                <div class="custom-control custom-switch d-inline float-right">
+                                    <input type="checkbox" name="sck_cli_active" value="1" class="custom-control-input" id="switch-socket-client">
+                                    <label class="custom-control-label" for="switch-socket-client"></label>
+                                </div>
+                                <div class="d-inline mr-1 float-right">
+                                    <input type="color" name="sck_cli_color" data-disable-if="#switch-socket-client" value="#ffffff" id="color-socket-client">
+                                </div>
+                            </div>
+                            <div class="card-body" data-disable-if="#switch-socket-client">
+                                <div class="form-row mb-3">
+                                    <div class="col-8">
+                                        <label>Host and port</label>
+                                        <div class="input-group">
+                                            <div class="btn-group btn-group-toggle d-flex input-group-prepend" data-toggle="buttons">
+                                                <label class="btn btn-outline-secondary active">
+                                                    <input type="radio" name="sck_cli_type" value="1" checked> TCP
+                                                </label>
+                                                <label class="btn btn-outline-secondary">
+                                                    <input type="radio" name="sck_cli_type" value="0"> UDP
+                                                </label>
+                                            </div>
+                                            <input type="text" name="sck_cli_host" class="form-control" style="flex-grow: 3" required>
+                                            <div class="input-group-append input-group-prepend">
+                                                <span class="input-group-text">:</span>
+                                            </div>
+                                            <input type="number" name="sck_cli_port" maxlength="5" min="0" max="65535" class="form-control" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <label>Connect message</label>
+                                        <div class="input-group">
+                                            <input type="text" name="sck_cli_msg_unformatted" class="form-control" value="">
+                                            <input type="hidden" name="sck_cli_msg" data-formatted="true">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                NTRIP caster
+                                <small class="ntrip-caster-stats stream-stats" data-stream="ntrip_caster"></small>
+                                <div class="custom-control custom-switch d-inline float-right">
+                                    <input type="checkbox" name="ntr_cst_active" value="1" class="custom-control-input" id="switch-ntrip-caster">
+                                    <label class="custom-control-label" for="switch-ntrip-caster"></label>
+                                </div>
+                                <div class="d-inline mr-1 float-right">
+                                    <input type="color" name="ntr_cst_color" data-disable-if="#switch-ntrip-caster" value="#ffffff" id="color-ntrip-caster">
+                                </div>
+                            </div>
+                            <div class="card-body" data-disable-if="#switch-ntrip-caster">
+                                <div class="form-row mb-3">
+                                    <div class="col">
+                                        <label>Port</label>
+                                        <div class="input-group">
+                                            <input type="number" name="ntr_cst_port" maxlength="5" min="0" max="65535" class="form-control" required>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <label>Mountpoint</label>
+                                        <div class="input-group">
+                                            <input type="text" name="ntr_cst_mp" class="form-control" maxlength="32" required>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <label>Username</label>
+                                        <div class="input-group">
+                                            <input type="text" name="ntr_cst_user" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <label>Password</label>
+                                        <div class="input-group">
+                                            <input type="password" name="ntr_cst_pass" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+    
             </div>
         </form>
     </div>
