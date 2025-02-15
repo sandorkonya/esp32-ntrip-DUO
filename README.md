@@ -2,7 +2,8 @@
 This version had been updated from ESP-IDF 4.1 to v5.2.3 and adapted to the WT32-ETH01 ESP32 Module.
 
 UPDATE 2025-02-14:
-Release v0.2 has the:
+[Release v0.2](https://github.com/sandorkonya/esp32-ntrip-DUO/releases/tag/v0.2) has the:
+
  - socket client & server
  - increased stability by removing the button component
 
